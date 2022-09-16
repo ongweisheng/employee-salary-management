@@ -6,10 +6,12 @@ const employeeSchema = new Schema({
     id: {
         type: String,
         required: true,
+        unique: true,
     },
     login: {
         type: String,
         required: true,
+        unique: true,
     },
     name: {
         type: String,

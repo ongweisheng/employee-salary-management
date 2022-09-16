@@ -2,18 +2,21 @@ import Employee from "../models/employee.js"
 import csvtojson from "csvtojson"
 
 export async function uploadDataFile(req, res) {
-    console.log(req.file.path)
-    csvtojson()
-        .fromFile(req.file.path)
-        .then((csvData) => {
-            console.log(csvData);
-            Employee.insertMany(csvData).then(() => {
-                console.log("Data inserted")
-                res.json({ success: "success" })
-            }).catch((err) => {
-                console.log(err)
-            })
-        })
+    try {
+        const upload = await csvtojson().fromFile(req.file.path)
+                                        .then((csvData) => {
+                                            Employee.insertMany(csvData)
+                                                .then(() => {
+                                                    res.status(201).json({ success: "success" })
+                                                })
+                                                .catch((err) => {
+                                                    console.log(err)
+                                                    res.status(404).json(err)
+                                                })
+                                        })
+    } catch (err) {
+        res.status(500).json(err)
+    }
 }
 
 export async function getEmployeesData(req, res) {
