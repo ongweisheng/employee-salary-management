@@ -16,7 +16,7 @@ const employeeSchema = new Schema({
         required: true,
     },
     salary: {
-        type: Float64Array,
+        type: Schema.Types.Decimal128,
         required: true
     },
 })

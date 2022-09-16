@@ -2,6 +2,7 @@ import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import "dotenv/config"
+import employeeRoutes from "./routes/employeeRoutes.js"
 
 const uri = process.env.DB_URL
 
@@ -26,6 +27,8 @@ app.get("/", (req, res) => {
         descript: "this is just health check"
     })
 })
+
+app.use("/users", employeeRoutes)
 
 app.listen(port, () => {
     console.log("Server started on port: ", port)
