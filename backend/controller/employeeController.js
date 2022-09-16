@@ -2,11 +2,12 @@ import Employee from "../models/employee.js"
 import csvtojson from "csvtojson"
 
 export async function uploadDataFile(req, res) {
+    console.log(req.file.path)
     csvtojson()
-        .fromFile("tests.csv")
-        .then(csvData => {
+        .fromFile(req.file.path)
+        .then((csvData) => {
             console.log(csvData);
-            Employee.insertMany(csvData).then(function () {
+            Employee.insertMany(csvData).then(() => {
                 console.log("Data inserted")
                 res.json({ success: "success" })
             }).catch((err) => {
