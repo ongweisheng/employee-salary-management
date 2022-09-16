@@ -3,17 +3,17 @@ import csvtojson from "csvtojson"
 
 export async function uploadDataFile(req, res) {
     try {
-        const upload = await csvtojson().fromFile(req.file.path)
-                                        .then((csvData) => {
-                                            Employee.insertMany(csvData)
-                                                .then(() => {
-                                                    res.status(201).json({ success: "success" })
-                                                })
-                                                .catch((err) => {
-                                                    console.log(err)
-                                                    res.status(404).json(err)
-                                                })
-                                        })
+        await csvtojson().fromFile(req.file.path)
+                        .then((csvData) => {
+                            Employee.insertMany(csvData)
+                                .then(() => {
+                                    res.status(201).json({ success: "success" })
+                                })
+                                .catch((err) => {
+                                    console.log(err)
+                                    res.status(404).json(err)
+                                })
+                        })
     } catch (err) {
         res.status(500).json(err)
     }
