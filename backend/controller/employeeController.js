@@ -14,3 +14,12 @@ export async function uploadDataFile(req, res) {
             })
         })
 }
+
+export async function getEmployeesData(req, res) {
+    try {
+        const employees = await Employee.find();
+        res.status(200).json(employees)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
