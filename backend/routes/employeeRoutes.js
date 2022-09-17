@@ -8,5 +8,6 @@ let upload = multer({ dest: "uploads/" })
 
 router.route("/upload").post(upload.single("file"), employeeController.uploadDataFile)
 router.route("/").get(employeeController.getEmployeesData)
+router.route("/clear").delete(employeeController.clearEmployeesData)
 
 export default router

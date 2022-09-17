@@ -27,3 +27,12 @@ export async function getEmployeesData(req, res) {
         res.status(500).json(err)
     }
 }
+
+export async function clearEmployeesData(req, res) {
+    try {
+        const clearEmployees = await Employee.remove();
+        res.status(200).json(clearEmployees)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
