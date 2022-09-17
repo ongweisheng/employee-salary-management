@@ -5,15 +5,22 @@ export async function uploadDataFile(req, res) {
     try {
         await csvtojson().fromFile(req.file.path)
                         .then((csvData) => {
-                            Employee.insertMany(csvData)
-                                .then(() => {
-                                    res.status(201).json({ success: "success" })
-                                })
-                                .catch((err) => {
-                                    console.log(err)
-                                    res.status(404).json(err)
-                                })
+                            for (let row of csvData) {
+                                console.log(row)
+                                if (row.id.startsWith("#")) {
+                                    console.log("commented row"
+                                    )
+                                    continue
+                                } else {
+                                    Employee.create(row)
+                                        .catch((err) => {
+                                        console.log(err)
+                                        res.status(404).json(err)
+                                        })
+                                }
+                            }
                         })
+        res.status(201).json({ message: "successful upload" })
     } catch (err) {
         res.status(500).json(err)
     }
