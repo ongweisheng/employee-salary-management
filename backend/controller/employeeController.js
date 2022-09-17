@@ -19,7 +19,7 @@ export async function uploadDataFile(req, res) {
                         || row.salary === undefined) {
                         return res.status(404).send({ message: "Incomplete fields in csv file" })        
                     }
-                    if (parseFloat(row.salary) < 0) {
+                    if (parseFloat(row.salary) < 0 || isNaN(parseFloat(row.salary))) {
                         return res.status(404).send({ message: "Invalid salary in the csv file "})
                     }
                     if (idMap.has(row.id)) {
