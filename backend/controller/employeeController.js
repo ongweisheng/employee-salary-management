@@ -31,11 +31,6 @@ export async function uploadDataFile(req, res) {
                     if (row.id.startsWith("#")) {
                         continue
                     } else {
-                        // Employee.create(row)
-                        //     .catch((err) => {
-                        //         console.log(err)
-                        //         return res.status(404).json(err)
-                        //     })
                         Employee.updateOne({ id: row.id }, row, { upsert: true })
                             .catch((err) => {
                                 console.log(err)
@@ -43,7 +38,7 @@ export async function uploadDataFile(req, res) {
                             })
                     }
                 }
-                // return res.status(201).json({ message: "successful upload" })
+                return res.status(201).json({ message: "successful upload" })
             })
     } catch (err) {
         return res.status(500).json(err)
