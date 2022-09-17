@@ -6,6 +6,9 @@ export async function uploadDataFile(req, res) {
         await csvtojson()
             .fromFile(req.file.path)
             .then(async (csvData) => {
+                if (csvData.length === 0) {
+                    return res.status(404).send({ message: "Empty file was uploaded" })
+                }
                 let idMap = new Map()
                 let loginMap = new Map()
                 for (let row of csvData) {
