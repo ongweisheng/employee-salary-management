@@ -19,6 +19,19 @@ export async function uploadDataFile(req, res) {
                         || row.salary === undefined) {
                         return res.status(404).send({ message: "Incomplete fields in csv file" })        
                     }
+                    if (parseFloat(row.salary) < 0) {
+                        return res.status(404).send({ message: "Invalid salary in the csv file "})
+                    }
+                    if (idMap.has(row.id)) {
+                        return res.status(404).send({ message: "Unsuccessful upload due to duplicate id" })
+                    } else {
+                        idMap.set(row.id, 0)
+                    }
+                    if (loginMap.has(row.login)) {
+                        return res.status(404).send({ message: "Unsuccessful upload due to duplicate login" })
+                    } else {
+                        loginMap.set(row.login, 0)
+                    }
                     let isExistingLogin = await Employee.findOne({ login: row.login })
                         .then((response) => {
                             if (response === null) {
@@ -34,16 +47,6 @@ export async function uploadDataFile(req, res) {
                         })
                     if (isExistingLogin) {
                         return res.status(404).send({ message: "Tried to overwrite existing login"})
-                    }
-                    if (idMap.has(row.id)) {
-                        return res.status(404).send({ message: "Unsuccessful upload due to duplicate id" })
-                    } else {
-                        idMap.set(row.id, 0)
-                    }
-                    if (loginMap.has(row.login)) {
-                        return res.status(404).send({ message: "Unsuccessful upload due to duplicate login" })
-                    } else {
-                        loginMap.set(row.login, 0)
                     }
                 }
                 for (let row of csvData) {
