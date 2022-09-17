@@ -12,6 +12,10 @@ export async function uploadDataFile(req, res) {
                     if (row.id.startsWith("#")) {
                         continue
                     }
+                    if (row.id === undefined || row.login === undefined || row.name === undefined
+                        || row.salary === undefined) {
+                        return res.status(404).send({ message: "Incomplete fields in csv file" })        
+                    }
                     if (idMap.has(row.id)) {
                         return res.status(404).send({ message: "Unsuccessful upload due to duplicate id" })
                     } else {
@@ -27,17 +31,22 @@ export async function uploadDataFile(req, res) {
                     if (row.id.startsWith("#")) {
                         continue
                     } else {
-                        Employee.create(row)
+                        // Employee.create(row)
+                        //     .catch((err) => {
+                        //         console.log(err)
+                        //         return res.status(404).json(err)
+                        //     })
+                        Employee.updateOne({ id: row.id }, row, { upsert: true })
                             .catch((err) => {
                                 console.log(err)
                                 return res.status(404).json(err)
                             })
                     }
                 }
-                return res.status(201).json({ message: "successful upload" })
+                // return res.status(201).json({ message: "successful upload" })
             })
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
 
