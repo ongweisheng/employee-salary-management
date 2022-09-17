@@ -3,24 +3,39 @@ import csvtojson from "csvtojson"
 
 export async function uploadDataFile(req, res) {
     try {
-        await csvtojson().fromFile(req.file.path)
-                        .then((csvData) => {
-                            for (let row of csvData) {
-                                console.log(row)
-                                if (row.id.startsWith("#")) {
-                                    console.log("commented row"
-                                    )
-                                    continue
-                                } else {
-                                    Employee.create(row)
-                                        .catch((err) => {
-                                        console.log(err)
-                                        res.status(404).json(err)
-                                        })
-                                }
-                            }
-                        })
-        res.status(201).json({ message: "successful upload" })
+        await csvtojson()
+            .fromFile(req.file.path)
+            .then((csvData) => {
+                let idMap = new Map()
+                let loginMap = new Map()
+                for (let row of csvData) {
+                    if (row.id.startsWith("#")) {
+                        continue
+                    }
+                    if (idMap.has(row.id)) {
+                        return res.status(404).send({ message: "Unsuccessful upload due to duplicate id" })
+                    } else {
+                        idMap.set(row.id, 0)
+                    }
+                    if (loginMap.has(row.login)) {
+                        return res.status(404).send({ message: "Unsuccessful upload due to duplicate login" })
+                    } else {
+                        loginMap.set(row.login, 0)
+                    }
+                }
+                for (let row of csvData) {
+                    if (row.id.startsWith("#")) {
+                        continue
+                    } else {
+                        Employee.create(row)
+                            .catch((err) => {
+                                console.log(err)
+                                return res.status(404).json(err)
+                            })
+                    }
+                }
+                return res.status(201).json({ message: "successful upload" })
+            })
     } catch (err) {
         res.status(500).json(err)
     }
@@ -29,17 +44,17 @@ export async function uploadDataFile(req, res) {
 export async function getEmployeesData(req, res) {
     try {
         const employees = await Employee.find();
-        res.status(200).json(employees)
+        return res.status(200).json(employees)
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
 
 export async function clearEmployeesData(req, res) {
     try {
         const clearEmployees = await Employee.remove();
-        res.status(200).json(clearEmployees)
+        return res.status(200).json(clearEmployees)
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
