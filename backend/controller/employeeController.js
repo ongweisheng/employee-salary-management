@@ -65,7 +65,7 @@ export async function uploadDataFile(req, res) {
     }
 }
 
-export async function getEmployeesData(req, res) {
+export async function getAllEmployeeData(req, res) {
     try {
         const employees = await Employee.find();
         return res.status(200).json(employees)
@@ -84,3 +84,90 @@ export async function clearEmployeesData(req, res) {
         return res.status(500).json(err)
     }
 }
+
+export async function getEmployeesData(req, res) {
+    try {
+        if (req.query.minSalary === undefined || req.query.maxSalary === undefined || req.query.offset === undefined
+            || req.query.limit === undefined || req.query.sort === undefined) {
+            return res.status(400).send({ message: "Missing request params" })        
+        }
+        const employees = await Employee.find();
+        const numberOfEmployees = employees.length
+        const minSalary = parseFloat(req.query.minSalary)
+        if (minSalary < 0 || isNaN(minSalary)) {
+            return res.status(404).send({ message: "Invalid minSalary value "})
+        }
+        const maxSalary = parseFloat(req.query.maxSalary)
+        if (maxSalary < 0 || isNaN(maxSalary)) {
+            return res.status(404).send({ message: "Invalid maxSalary value"})
+        }
+        const offset = parseInt(req.query.offset)
+        if (isNaN(offset)) {
+            return res.status(404).send({ message: "Invalid offset value"})
+        }
+        const limit = parseInt(req.query.limit)
+        if (isNaN(limit)) {
+            return res.status(404).send({ message: "Invalid offset value"})
+        }
+        const sortOrder = req.query.sort.charAt(0)
+        const sortAttribute = req.query.sort.slice(1)
+        if (sortAttribute !== "id" && sortAttribute !== "login" && sortAttribute !== "name" && sortAttribute !== "salary") {
+            return res.status(400).send({ message: "Invalid sort attribute" })
+        }
+        const salaryFilteredEmployees = employees.filter(employee => parseFloat(employee.salary) >= minSalary 
+                                                    && parseFloat(employee.salary) <= maxSalary)
+        if (sortOrder === "+") {
+            salaryFilteredEmployees.sort(ascendingSortByProperty(sortAttribute))
+        } else if (sortOrder === "-") {
+            salaryFilteredEmployees.sort(descendingSortByProperty(sortAttribute))
+        } else {
+            return res.status(400).send({ message: "Invalid sort order" }) 
+        }
+        const employeesToDisplay = (numberOfEmployees - offset) > limit ? limit : numberOfEmployees - offset
+        const response = salaryFilteredEmployees.slice(offset, offset + employeesToDisplay)
+        return res.status(200).json(response)
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json(err)
+    }
+}
+
+function ascendingSortByProperty(property) {  
+    return function(a,b) {  
+        if (property === "salary") {
+            if (parseFloat(a[property]) > parseFloat(b[property])) {
+                return 1
+            } else if (parseFloat(a[property]) < parseFloat(b[property])) {
+                return -1
+            }
+            return 0
+        } else {
+            if (a[property] > b[property]) {
+                return 1
+            } else if (a[property] < b[property]) {
+                return -1
+            }
+            return 0
+        }
+    }  
+ }
+
+ function descendingSortByProperty(property) {  
+    return function(a,b) {  
+        if (property === "salary") {
+            if (parseFloat(a[property]) > parseFloat(b[property])) {
+                return -1
+            } else if (parseFloat(a[property]) < parseFloat(b[property])) {
+                return 1
+            }
+            return 0
+        } else {
+            if (a[property] > b[property]) {
+                return -1
+            } else if (a[property] < b[property]) {
+                return 1
+            }
+            return 0
+        }
+    }  
+ }
