@@ -55,6 +55,7 @@ const Employees = () => {
 
     return (
         <>
+            <div className="d-grid gap-3">
             <Form onSubmit={handleGetEmployees}>
                 <Row>
                     <Col>
@@ -98,9 +99,11 @@ const Employees = () => {
                         </tr>)}
                 </tbody>
             </Table>
-            <Button variant="primary" onClick={handlePreviousPage}>Previous page</Button>
+        </div>
+            <Button variant="primary" onClick={handlePreviousPage}>Previous page</Button>{" "}
             <Button variant="primary" onClick={handleNextPage}>Next page</Button>
         </>
+        
     )
 }
 
