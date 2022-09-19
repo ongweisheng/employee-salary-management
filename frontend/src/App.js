@@ -1,9 +1,11 @@
 import './App.css'
+import NavBar from "./components/NavBar.js"
 import EmployeesDashboard from "./components/EmployeesDashboard.js"
 
 function App() {
   return (
-    <div className="container">
+    <div className="d-grid gap-3">
+      <NavBar />
       <EmployeesDashboard />
     </div>
   );

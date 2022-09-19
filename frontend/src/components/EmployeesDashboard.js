@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Table, Button, Form, Row, Col } from "react-bootstrap"
+import { Container, Table, Button, Form, Row, Col } from "react-bootstrap"
 import EmployeeService from "../services/EmployeeService.js"
 
 const EmployeesDashboard = () => {
@@ -65,7 +65,7 @@ const EmployeesDashboard = () => {
     }
 
     return (
-        <>
+        <Container>
         <div className="d-grid gap-3">
             <h2>Employees Dashboard</h2>
             <Form onSubmit={handleGetEmployees}>
@@ -117,7 +117,7 @@ const EmployeesDashboard = () => {
         </div>
             <Button variant="primary" onClick={handlePreviousPage}>Previous page</Button>{" "}
             <Button variant="primary" onClick={handleNextPage}>Next page</Button>
-        </>
+        </Container>
         
     )
 }
