@@ -175,35 +175,35 @@ function descendingSortByProperty(property) {
 export async function createEmployee(req, res) {
     try {
         const employee = await Employee.create(req.body)
-        res.status(201).json(employee)
+        return res.status(201).json(employee)
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
 
 export async function updateEmployee(req, res) {
     try {
         const employee = await Employee.findOneAndUpdate({ id: `${req.params.id}` }, req.body, { new: true })
-        res.status(200).json(employee)
+        return res.status(200).json(employee)
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
 
 export async function getEmployee(req, res) {
     try {
         const employee = await Employee.findOne({ id: `${req.params.id}` })
-        res.status(200).json(employee)
+        return res.status(200).json(employee)
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
 
 export async function deleteEmployee(req, res) {
     try {
         const response = await Employee.deleteOne({ id: `${req.params.id}` })
-        res.status(200).json(response)
+        return res.status(200).json(response)
     } catch (err) {
-        res.status(500).json(err)
+        return res.status(500).json(err)
     }
 }
