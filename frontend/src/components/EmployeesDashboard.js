@@ -1,8 +1,8 @@
-import {useState, useEffect } from "react"
+import { useState } from "react"
 import { Table, Button, Form, Row, Col } from "react-bootstrap"
 import EmployeeService from "../services/EmployeeService.js"
 
-const Employees = () => {
+const EmployeesDashboard = () => {
     const [employees, setEmployees] = useState([])
     const [minSalary, setMinSalary] = useState("")
     const [maxSalary, setMaxSalary] = useState("")
@@ -55,7 +55,8 @@ const Employees = () => {
 
     return (
         <>
-            <div className="d-grid gap-3">
+        <div className="d-grid gap-3">
+            <h2>Employees Dashboard</h2>
             <Form onSubmit={handleGetEmployees}>
                 <Row>
                     <Col>
@@ -107,4 +108,4 @@ const Employees = () => {
     )
 }
 
-export default Employees
+export default EmployeesDashboard
