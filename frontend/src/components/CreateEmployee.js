@@ -52,6 +52,7 @@ const CreateEmployee = () => {
 
     return (
         <Container>
+            <h2>Create employee</h2>
             <AlertMessage message={alertMessage} />
             <Form onSubmit={handleCreateEmployee}>
                 <Form.Group className="mb-3" controlId="formBasicName">

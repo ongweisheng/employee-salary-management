@@ -35,6 +35,7 @@ const FindEmployee = () => {
     return (
         <Container>
          <div className="d-grid gap-3">
+            <h2>Find employee</h2>
             <AlertMessage message={alertMessage} />
             <Form onSubmit={handleFindEmployee}>
                 <Form.Group className="mb-3" controlId="formBasicName">
