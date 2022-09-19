@@ -32,6 +32,17 @@ const EmployeesDashboard = () => {
             })
     }
 
+    const handleDeleteEmployee = (event) => {
+        const employeeToBeDeleted = event.target.id
+        EmployeeService.deleteEmployee(employeeToBeDeleted)
+            .then(() => {
+                setEmployees(employees.filter(employee => employee.id !== employeeToBeDeleted))
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
     const handlePreviousPage = () => {
         EmployeeService.getEmployees(minSalary, maxSalary, offset - 30, limit, sort)
             .then(returnedData => {
@@ -96,6 +107,9 @@ const EmployeesDashboard = () => {
                             </td>
                             <td>
                                 {employee.salary}
+                            </td>
+                            <td className="deleteButton">
+                                <Button variant="danger" id={employee.id} onClick={handleDeleteEmployee}>delete</Button>
                             </td>
                         </tr>)}
                 </tbody>
