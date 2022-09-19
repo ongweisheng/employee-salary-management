@@ -9,8 +9,12 @@ const EmployeesDashboard = () => {
     const [sort, setSort] = useState("")
     const [offset, setOffset] = useState(0)
     const limit = 30
-    const [show, setShow] = useState(false)
+    const [showDelete, setShowDelete] = useState(false)
+    const [showUpdate, setShowUpdate] = useState(false)
     const [selectedEmployeeId, setSelectedEmployeeId] = useState("")
+    const [login, setLogin] = useState("")
+    const [name, setName] = useState("")
+    const [salary, setSalary] = useState("")
 
     const handleMinSalaryChange = (event) => {
         setMinSalary(event.target.value)
@@ -34,18 +38,57 @@ const EmployeesDashboard = () => {
             })
     }
 
-    const handleClose = () => setShow(false)
-    const handleShow = (event) => {
+    const handleCloseDelete = () => setShowDelete(false)
+    const handleShowDelete = (event) => {
         setSelectedEmployeeId(event.target.id)
-        setShow(true)
+        setShowDelete(true)
     }
     const handleDeleteEmployee = (event) => {
         const employeeToBeDeleted = event.target.id
         EmployeeService.deleteEmployee(employeeToBeDeleted)
             .then(() => {
                 setEmployees(employees.filter(employee => employee.id !== employeeToBeDeleted))
-                setShow(false)
+                setShowDelete(false)
                 setSelectedEmployeeId("")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    const handleLoginChange = (event) => {
+        setLogin(event.target.value)
+    }
+
+    const handleNameChange = (event) => {
+        setName(event.target.value)
+    }
+
+    const handleSalaryChange = (event) => {
+        setSalary(event.target.value)
+    }
+
+
+    const handleCloseUpdate = () => setShowUpdate(false)
+    const handleShowUpdate = (event) => {
+        setSelectedEmployeeId(event.target.id)
+        setShowUpdate(true)
+    }
+    const handleUpdateEmployee = (event) => {
+        const employeeToBeUpdated = event.target.id
+        const employeeObject = {
+            login: login,
+            name: name,
+            salary: salary
+        }
+        EmployeeService.updateEmployee(employeeToBeUpdated, employeeObject)
+            .then((returnedEmployee) => {
+                setEmployees(employees.map(employee => employee.id === employeeToBeUpdated ? returnedEmployee : employee))
+                setShowUpdate(false)
+                setSelectedEmployeeId("")
+                setLogin("")
+                setName("")
+                setSalary("")
             })
             .catch((err) => {
                 console.log(err)
@@ -118,8 +161,9 @@ const EmployeesDashboard = () => {
                             <td>
                                 {employee.salary}
                             </td>
-                            <td className="deleteButton">
-                                <Button variant="danger" id={employee.id} onClick={handleShow}>delete</Button>
+                            <td className="buttons">
+                                <Button class="mx-auto" variant="danger" id={employee.id} onClick={handleShowDelete}>delete</Button>{" "}
+                                <Button variant="primary" id={employee.id} onClick={handleShowUpdate}>update</Button>
                             </td>
                         </tr>)}
                 </tbody>
@@ -127,14 +171,39 @@ const EmployeesDashboard = () => {
         </div>
             <Button variant="primary" onClick={handlePreviousPage}>Previous page</Button>{" "}
             <Button variant="primary" onClick={handleNextPage}>Next page</Button>
-            <Modal className="deleteModal" show={show} onHide={handleClose} keyboard={false} animation={false}>
+            <Modal className="deleteModal" show={showDelete} onHide={handleCloseDelete} keyboard={false} animation={false}>
                 <Modal.Header closeButton>
                     <Modal.Title>Delete</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>Are you sure you want to delete {selectedEmployeeId}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    <Button variant="secondary" onClick={handleCloseDelete}>Close</Button>
                      <Button variant="danger" id={selectedEmployeeId} onClick={handleDeleteEmployee}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal className="updateModal" show={showUpdate} onHide={handleCloseUpdate} keyboard={false} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="formBasicName">
+                            <Form.Label>Updated login</Form.Label>
+                            <Form.Control type="text" placeholder="Enter updated login" value={login} onChange={handleLoginChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicName">
+                            <Form.Label>Updated name</Form.Label>
+                            <Form.Control type="text" placeholder="Enter updated name" value={name} onChange={handleNameChange} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicName">
+                            <Form.Label>Updated salary</Form.Label>
+                            <Form.Control type="text" placeholder="Enter updated salary" value={salary} onChange={handleSalaryChange} />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseUpdate}>Close</Button>
+                     <Button variant="primary" id={selectedEmployeeId} onClick={handleUpdateEmployee}>Update</Button>
                 </Modal.Footer>
             </Modal>
         </Container>

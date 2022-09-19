@@ -25,4 +25,10 @@ const getEmployee = async (id) => {
     return response.data
 }
 
-export default { getEmployees, deleteEmployee, createEmployee, getEmployee }
+const updateEmployee = async (id, newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject)
+    const response = await request
+    return response.data
+}
+
+export default { getEmployees, deleteEmployee, createEmployee, getEmployee, updateEmployee }
