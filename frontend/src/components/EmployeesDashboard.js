@@ -14,7 +14,7 @@ const EmployeesDashboard = () => {
 
     const handleMinSalaryChange = (event) => {
         setMinSalary(event.target.value)
-      }
+    }
 
     const handleMaxSalaryChange = (event) => {
         setMaxSalary(event.target.value)
