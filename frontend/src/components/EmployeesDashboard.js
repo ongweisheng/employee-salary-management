@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Container, Table, Button, Form, Row, Col } from "react-bootstrap"
+import { Container, Table, Button, Form, Row, Col, Modal } from "react-bootstrap"
 import EmployeeService from "../services/EmployeeService.js"
 
 const EmployeesDashboard = () => {
@@ -9,6 +9,8 @@ const EmployeesDashboard = () => {
     const [sort, setSort] = useState("")
     const [offset, setOffset] = useState(0)
     const limit = 30
+    const [show, setShow] = useState(false)
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState("")
 
     const handleMinSalaryChange = (event) => {
         setMinSalary(event.target.value)
@@ -32,16 +34,24 @@ const EmployeesDashboard = () => {
             })
     }
 
+    const handleClose = () => setShow(false)
+    const handleShow = (event) => {
+        setSelectedEmployeeId(event.target.id)
+        setShow(true)
+    }
     const handleDeleteEmployee = (event) => {
         const employeeToBeDeleted = event.target.id
         EmployeeService.deleteEmployee(employeeToBeDeleted)
             .then(() => {
                 setEmployees(employees.filter(employee => employee.id !== employeeToBeDeleted))
+                setShow(false)
+                setSelectedEmployeeId("")
             })
             .catch((err) => {
                 console.log(err)
             })
     }
+
 
     const handlePreviousPage = () => {
         EmployeeService.getEmployees(minSalary, maxSalary, offset - 30, limit, sort)
@@ -109,7 +119,7 @@ const EmployeesDashboard = () => {
                                 {employee.salary}
                             </td>
                             <td className="deleteButton">
-                                <Button variant="danger" id={employee.id} onClick={handleDeleteEmployee}>delete</Button>
+                                <Button variant="danger" id={employee.id} onClick={handleShow}>delete</Button>
                             </td>
                         </tr>)}
                 </tbody>
@@ -117,6 +127,16 @@ const EmployeesDashboard = () => {
         </div>
             <Button variant="primary" onClick={handlePreviousPage}>Previous page</Button>{" "}
             <Button variant="primary" onClick={handleNextPage}>Next page</Button>
+            <Modal className="deleteModal" show={show} onHide={handleClose} keyboard={false} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete {selectedEmployeeId}</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
+                     <Button variant="danger" id={selectedEmployeeId} onClick={handleDeleteEmployee}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
         
     )
