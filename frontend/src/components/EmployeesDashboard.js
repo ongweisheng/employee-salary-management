@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Container, Table, Button, Form, Row, Col, Modal } from "react-bootstrap"
 import EmployeeService from "../services/EmployeeService.js"
+import AlertMessage from "./AlertMessage.js"
 
 const EmployeesDashboard = () => {
     const [employees, setEmployees] = useState([])
@@ -15,6 +16,7 @@ const EmployeesDashboard = () => {
     const [login, setLogin] = useState("")
     const [name, setName] = useState("")
     const [salary, setSalary] = useState("")
+    const [alertMessage, setAlertMessage] = useState(null)
 
     const handleMinSalaryChange = (event) => {
         setMinSalary(event.target.value)
@@ -76,6 +78,16 @@ const EmployeesDashboard = () => {
     }
     const handleUpdateEmployee = (event) => {
         const employeeToBeUpdated = event.target.id
+        if (isNaN(parseFloat(salary))) {
+            setAlertMessage("Invalid salary")
+            setTimeout(() => {
+                setAlertMessage(null)
+            }, 3000)
+            setLogin("")
+            setName("")
+            setSalary("")
+            return
+        }
         const employeeObject = {
             login: login,
             name: name,
@@ -182,6 +194,7 @@ const EmployeesDashboard = () => {
                 </Modal.Footer>
             </Modal>
             <Modal className="updateModal" show={showUpdate} onHide={handleCloseUpdate} keyboard={false} animation={false}>
+                <AlertMessage message={alertMessage} />
                 <Modal.Header closeButton>
                     <Modal.Title>Update</Modal.Title>
                 </Modal.Header>

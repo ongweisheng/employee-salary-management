@@ -175,9 +175,9 @@ function descendingSortByProperty(property) {
 export async function createEmployee(req, res) {
     try {
         const employee = await Employee.create(req.body)
-        return res.status(201).json(employee)
+        return res.status(200).json(employee)
     } catch (err) {
-        return res.status(500).json(err)
+        return res.status(400).json(err)
     }
 }
 
@@ -186,7 +186,7 @@ export async function updateEmployee(req, res) {
         const employee = await Employee.findOneAndUpdate({ id: `${req.params.id}` }, req.body, { new: true })
         return res.status(200).json(employee)
     } catch (err) {
-        return res.status(500).json(err)
+        return res.status(400).json(err)
     }
 }
 
@@ -195,7 +195,7 @@ export async function getEmployee(req, res) {
         const employee = await Employee.findOne({ id: `${req.params.id}` })
         return res.status(200).json(employee)
     } catch (err) {
-        return res.status(500).json(err)
+        return res.status(400).json(err)
     }
 }
 
@@ -204,6 +204,6 @@ export async function deleteEmployee(req, res) {
         const response = await Employee.deleteOne({ id: `${req.params.id}` })
         return res.status(200).json(response)
     } catch (err) {
-        return res.status(500).json(err)
+        return res.status(400).json(err)
     }
 }
