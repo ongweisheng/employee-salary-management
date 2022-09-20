@@ -5,7 +5,9 @@ import bodyParser from "body-parser"
 import "dotenv/config"
 import employeeRoutes from "./routes/employeeRoutes.js"
 
-const uri = process.env.DB_URL
+const uri = process.env.NODE_ENV === "test"
+    ? process.env.TEST_DB_URL
+    : process.env.DB_URL
 
 mongoose.connect(uri)
     .then((connections) => {

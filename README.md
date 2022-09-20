@@ -9,15 +9,19 @@ To start the backend server
 1. Open up a terminal at the backend directory
 2. Run command `npm install`
 3. Create a `.env` file in the directory
-4. Specify `PORT` value and `DB_URL` value in the `.env` file. An example can be shown below.
+4. Specify `NODE_ENV` value, `PORT` value, `DB_URL` value and `TEST_DB_URL` value in the `.env` file. An example can be shown below.
 ```
+NODE_ENV=production
 PORT=3000
 DB_URL={insert mongodb connection url here}
+TEST_DB_URL={insert mongodb connection url here}
 ```
 5. Run command `node index.js`
 
 Upon running `node index.js`, backend server would be started up on localhost port 3000 and API calls can be made to the backend server to retrieve employee data. An example can be shown below using Postman.
 ![image](https://user-images.githubusercontent.com/57165946/191042357-23357574-87de-42cd-9c02-0f93f7ddb3b2.png)
+
+6. For running tests, run command `npm run test` and the written test cases will be ran and checked for pass/failure
 
 # Frontend
 
