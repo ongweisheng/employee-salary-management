@@ -43,17 +43,21 @@ const CreateEmployee = () => {
                 setAlertMessage("Employee has been created!")
                 setTimeout(() => {
                     setAlertMessage(null)
-                }, 5000)
+                }, 3000)
             })
             .catch((err) => {
+                setAlertMessage("Error while creating employee. Check your input fields again!")
+                setTimeout(() => {
+                    setAlertMessage(null)
+                }, 3000)
                 console.log(err)
             })
     }
 
     return (
         <Container>
-            <h2>Create employee</h2>
             <AlertMessage message={alertMessage} />
+            <h2>Create employee</h2>
             <Form onSubmit={handleCreateEmployee}>
                 <Form.Group className="mb-3" controlId="formBasicName">
                     <Form.Label>id</Form.Label>

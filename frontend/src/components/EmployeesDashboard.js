@@ -17,6 +17,7 @@ const EmployeesDashboard = () => {
     const [name, setName] = useState("")
     const [salary, setSalary] = useState("")
     const [alertMessage, setAlertMessage] = useState(null)
+    const [updateAlertMessage, setUpdateAlertMessage] = useState(null)
 
     const handleMinSalaryChange = (event) => {
         setMinSalary(event.target.value)
@@ -36,6 +37,10 @@ const EmployeesDashboard = () => {
             .then(returnedData => {
                 setEmployees(returnedData)
             }).catch((err) => {
+                setAlertMessage(err.response.data.message)
+                setTimeout(() => {
+                    setAlertMessage(null)
+                }, 3000)
                 console.log(err)
             })
     }
@@ -78,10 +83,10 @@ const EmployeesDashboard = () => {
     }
     const handleUpdateEmployee = (event) => {
         const employeeToBeUpdated = event.target.id
-        if (isNaN(parseFloat(salary))) {
-            setAlertMessage("Invalid salary")
+        if (isNaN(parseFloat(salary)) || isNaN(parseFloat(salary)) < 0) {
+            setUpdateAlertMessage("Error! Invalid salary")
             setTimeout(() => {
-                setAlertMessage(null)
+                setUpdateAlertMessage(null)
             }, 3000)
             setLogin("")
             setName("")
@@ -103,6 +108,10 @@ const EmployeesDashboard = () => {
                 setSalary("")
             })
             .catch((err) => {
+                setUpdateAlertMessage("Error while updating. Login has to be unique! Check your input fields again!")
+                setTimeout(() => {
+                    setUpdateAlertMessage(null)
+                }, 3000)
                 console.log(err)
             })
     }
@@ -131,18 +140,22 @@ const EmployeesDashboard = () => {
 
     return (
         <Container>
+        <AlertMessage message={alertMessage} />
         <div className="d-grid gap-3">
             <h2>Employees Dashboard</h2>
             <Form onSubmit={handleGetEmployees}>
                 <Row>
                     <Col>
+                        <Form.Label>Min Salary</Form.Label>
                         <Form.Control placeholder="min salary" onChange={handleMinSalaryChange} />
                     </Col>
                     <Col>
+                        <Form.Label>Max Salary</Form.Label>
                         <Form.Control placeholder="max salary" onChange={handleMaxSalaryChange} />
                     </Col>
                     <Col>
-                        <Form.Control placeholder="sort method" onChange={handleSortChange} />
+                        <Form.Label>Sort Method (Example: +id, -salary)</Form.Label>
+                        <Form.Control placeholder="+/- for sort order" onChange={handleSortChange} />
                     </Col>
                     <Col>
                         <Button variant="primary" type="submit">Filter</Button>
@@ -194,7 +207,7 @@ const EmployeesDashboard = () => {
                 </Modal.Footer>
             </Modal>
             <Modal className="updateModal" show={showUpdate} onHide={handleCloseUpdate} keyboard={false} animation={false}>
-                <AlertMessage message={alertMessage} />
+                <AlertMessage message={updateAlertMessage} />
                 <Modal.Header closeButton>
                     <Modal.Title>Update</Modal.Title>
                 </Modal.Header>

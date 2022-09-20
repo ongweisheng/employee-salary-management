@@ -89,30 +89,30 @@ export async function getEmployeesData(req, res) {
     try {
         if (req.query.minSalary === undefined || req.query.maxSalary === undefined || req.query.offset === undefined
             || req.query.limit === undefined || req.query.sort === undefined) {
-            return res.status(400).send({ message: "Missing request params" })        
+            return res.status(400).send({ message: "Error! Missing request params" })        
         }
         const employees = await Employee.find();
         const numberOfEmployees = employees.length
         const minSalary = parseFloat(req.query.minSalary)
         if (minSalary < 0 || isNaN(minSalary)) {
-            return res.status(404).send({ message: "Invalid minSalary value "})
+            return res.status(400).send({ message: "Error! Invalid minSalary value "})
         }
         const maxSalary = parseFloat(req.query.maxSalary)
         if (maxSalary < 0 || isNaN(maxSalary)) {
-            return res.status(404).send({ message: "Invalid maxSalary value"})
+            return res.status(400).send({ message: "Error! Invalid maxSalary value"})
         }
         const offset = parseInt(req.query.offset)
         if (isNaN(offset)) {
-            return res.status(404).send({ message: "Invalid offset value"})
+            return res.status(400).send({ message: "Error! Invalid offset value"})
         }
         const limit = parseInt(req.query.limit)
         if (isNaN(limit)) {
-            return res.status(404).send({ message: "Invalid offset value"})
+            return res.status(400).send({ message: "Error! Invalid offset value"})
         }
         const sortOrder = req.query.sort.charAt(0)
         const sortAttribute = req.query.sort.slice(1)
         if (sortAttribute !== "id" && sortAttribute !== "login" && sortAttribute !== "name" && sortAttribute !== "salary") {
-            return res.status(400).send({ message: "Invalid sort attribute" })
+            return res.status(400).send({ message: "Error! Invalid sort attribute" })
         }
         const salaryFilteredEmployees = employees.filter(employee => parseFloat(employee.salary) >= minSalary 
                                                     && parseFloat(employee.salary) <= maxSalary)
@@ -121,7 +121,7 @@ export async function getEmployeesData(req, res) {
         } else if (sortOrder === "-") {
             salaryFilteredEmployees.sort(descendingSortByProperty(sortAttribute))
         } else {
-            return res.status(400).send({ message: "Invalid sort order" }) 
+            return res.status(400).send({ message: "Error! Invalid sort order" }) 
         }
         const employeesToDisplay = (numberOfEmployees - offset) > limit ? limit : numberOfEmployees - offset
         const response = salaryFilteredEmployees.slice(offset, offset + employeesToDisplay)
@@ -174,6 +174,13 @@ function descendingSortByProperty(property) {
 
 export async function createEmployee(req, res) {
     try {
+        if (req.body.id === undefined || req.body.login === undefined || req.body.name === undefined
+            || req.body.salary === undefined) {
+            return res.status(400).send({ message: "Error! Missing request params" })        
+        }
+        if (parseFloat(req.body.salary) < 0 || isNaN(parseFloat(req.body.salary))) {
+            return res.status(400).send({ message: "Error! Invalid salary" })
+        }
         const employee = await Employee.create(req.body)
         return res.status(200).json(employee)
     } catch (err) {
@@ -183,6 +190,9 @@ export async function createEmployee(req, res) {
 
 export async function updateEmployee(req, res) {
     try {
+        if (parseFloat(req.body.salary) < 0 || isNaN(parseFloat(req.body.salary))) {
+            return res.status(400).send({ message: "Error! Invalid salary" })
+        }
         const employee = await Employee.findOneAndUpdate({ id: `${req.params.id}` }, req.body, { new: true })
         return res.status(200).json(employee)
     } catch (err) {
@@ -193,6 +203,9 @@ export async function updateEmployee(req, res) {
 export async function getEmployee(req, res) {
     try {
         const employee = await Employee.findOne({ id: `${req.params.id}` })
+        if (employee === null) {
+            return res.status(400).send({ message: "Error! Invalid id" })
+        }
         return res.status(200).json(employee)
     } catch (err) {
         return res.status(400).json(err)
@@ -202,6 +215,9 @@ export async function getEmployee(req, res) {
 export async function deleteEmployee(req, res) {
     try {
         const response = await Employee.deleteOne({ id: `${req.params.id}` })
+        if (response.deletedCount === 0) {
+            return res.status(400).send({ message: "Error! Invalid id" })
+        }
         return res.status(200).json(response)
     } catch (err) {
         return res.status(400).json(err)

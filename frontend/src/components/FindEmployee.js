@@ -20,7 +20,7 @@ const FindEmployee = () => {
                     setAlertMessage("Error! Employee cannot be found. Try again with valid id!")
                     setTimeout(() => {
                         setAlertMessage(null)
-                    }, 5000)
+                    }, 3000)
                     return
                 } else {
                     setEmployee(returnedEmployee)
@@ -28,6 +28,10 @@ const FindEmployee = () => {
                 }
             })
             .catch((err) => {
+                setAlertMessage("Error! Employee cannot be found. Try again with valid id!")
+                    setTimeout(() => {
+                        setAlertMessage(null)
+                    }, 3000)
                 console.log(err)
             })
     }
